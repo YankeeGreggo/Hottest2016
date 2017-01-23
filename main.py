@@ -130,7 +130,7 @@ pickle.dump(votes_2016, open( "votes_2016.pickle", "wb"))
 
 # # Now the Moment of Truth -- Assign the weights to each song and print them out
 
-# In[67]:
+# In[90]:
 
 votes_2016 = pickle.load(open( "votes_2016.pickle" ))
 votes_2016 = [v for v in votes_2016 if v['votes'] is not False]
@@ -138,9 +138,9 @@ votes_2016 = [v for v in votes_2016 if v['votes'] is not False]
 def weight_songs(score_type, default_score):
     songs_2016 = {}
     for v in progressbar(votes_2016):
-        v_2015 = [v15 for v15 in filtered_votes_2015 if v15['user'] == v['user'] and 'descending_score' in v15.keys()]
+        v_2015 = [v15 for v15 in filtered_votes_2015 if v15['user'] == v['user'] and score_type in v15.keys()]
         if v_2015:
-            weighting = v_2015[0]['descending_score']
+            weighting = v_2015[0][score_type]
         else:
             weighting = default_score
         for vote in v['votes']:
@@ -151,7 +151,7 @@ def weight_songs(score_type, default_score):
     return songs_2016
 
 
-# In[76]:
+# In[91]:
 
 default_score = sum([fv['descending_score'] for fv in filtered_votes_2015]) / len([fv['descending_score'] for fv in filtered_votes_2015])
 songs = weight_songs('descending_score', default_score)
@@ -159,7 +159,7 @@ for i, song_weight in enumerate(sorted(songs, key=songs.get, reverse = True)[:20
     print i+1, song_weight.strip(), songs[song_weight]
 
 
-# In[77]:
+# In[92]:
 
 default_score = sum([fv['harmonic_score'] for fv in filtered_votes_2015]) / len([fv['harmonic_score'] for fv in filtered_votes_2015])
 songs = weight_songs('harmonic_score', default_score)
@@ -167,7 +167,7 @@ for i, song_weight in enumerate(sorted(songs, key=songs.get, reverse = True)):
     print i+1, song_weight.strip(), songs[song_weight]
 
 
-# In[78]:
+# In[93]:
 
 default_score = 1
 songs = weight_songs('flat_score', default_score)
